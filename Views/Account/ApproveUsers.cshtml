@@ -1,0 +1,42 @@
+@* Jack Gerber - A01266976
+   Date: Feb 16, 2025 *@
+   
+@model IEnumerable<ApplicationUser>
+
+@{
+    ViewData["Title"] = "Approve Users";
+}
+
+<h1>Approve Users</h1>
+
+@if (Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.FirstName @user.LastName</td>
+                    <td>@user.UserName</td>
+                    <td>
+                        <form method="post" asp-action="ApproveUser">
+                            <input type="hidden" name="id" value="@user.Id" />
+                            <button type="submit" class="btn btn-success">Approve</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No users need approval at the moment.</p>
+}

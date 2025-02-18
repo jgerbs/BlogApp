@@ -1,0 +1,37 @@
+@* Jack Gerber - A01266976
+   Date: Feb 16, 2025 *@
+ 
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+
+@model IEnumerable<BlogApp.Models.Article>
+
+@{
+    ViewData["Title"] = "Articles";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@foreach (var article in Model)
+{
+    <div class="article">
+        <h3>@article.Title</h3>
+        <p>@article.Body.Substring(0, Math.Min(100, article.Body.Length))...</p>
+        <a asp-action="Details" asp-route-id="@article.ArticleId">Read More</a>
+
+        @if (User.Identity.IsAuthenticated)
+        {
+            var user = await UserManager.GetUserAsync(User);
+            if (user != null && (User.IsInRole("Admin") || article.ContributorUsername == user.UserName))
+            {
+                <a asp-action="Edit" asp-route-id="@article.ArticleId" class="btn btn-warning">Edit</a>
+                <a asp-action="Delete" asp-route-id="@article.ArticleId" class="btn btn-danger">Delete</a>
+            }
+        }
+    </div>
+}
+
+@if (User.Identity.IsAuthenticated && User.IsInRole("Contributor"))
+{
+    <a asp-action="Create" class="btn btn-success">Create New Article</a>
+}
